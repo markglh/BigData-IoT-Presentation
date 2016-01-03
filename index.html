@@ -1141,7 +1141,8 @@ TODO
 					<section>
 						<h2>Spark Cassandra Connector</h2>
 						<ul>
-			         		<li>Open source connector, not DSE specific</li>
+							<li>Lets you expose Cassandra tables as Spark RDDs, write Spark RDDs to Cassandra tables, and execute CQL queries in your Spark applications</li>
+			         		<li>Open sourced by Datastax, not DSE specific</li>
 		         			<li>Takes into account data location</li>
 		         			<li>Spark partitions are constructed from data stored by C* on the same node</li>
 		         			<li>Partitions are not computed until an action is seen</li>
@@ -1149,7 +1150,7 @@ TODO
 
 	          			<aside class="notes">
 	          				<ul>
-	          					<li>Shuffling is expensive, so important to get partitioning correct</li>
+	          					<li>Shuffling is expensive, so it's important to get partitioning correct</li>
 	          					<li>Some operations explicitly shuffle data</li>
 	          				</ul>
 	          			</aside>
