@@ -1,0 +1,1251 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Big Data in IoT</title>
+
+		<meta name="description" content="Big Data in IoT">
+		<meta name="author" content="Mark Harrison">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/code.css">
+		<link rel="stylesheet" href="reveal.js/css/reveal.css">
+		<link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Big Data in IoT</h1>
+					<h3>Why do we need a different approach?</h3>
+					<h5>Plus a dose of Spark for good measure :)</h5>
+					<p>
+						<small>Created by <a href="https://github.com/markglh">Mark Harrison</a> / <a href="http://twitter.com/markglh">@markglh</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h1>Cake Solutions</h1>
+					<h3>Enterprise Software Services</h3>
+					<p>
+						<small><a href="www.cakesolutions.net">www.cakesolutions.net</a></small>
+					</p>
+				</section>
+
+				<section>
+	          		<img class="stretch" src="images/meme-internet_all_the_things.png"/>
+	          		<aside class="notes">
+	          			<ul>
+	          				<li>IoT is nothing new</li>
+	          				<li>It's just a buzzword used to describe the connection of remote "things"</li>
+	          				<li>The key is those devices all collect and exchange data over the internet</li>
+	          			</ul>
+	        		</aside>
+				</section>
+
+				<section>
+	          		<img class="stretch" src="images/meme-wesellthose.jpg"/>
+	          		<aside class="notes">
+	          			<ul>
+	          				<li>Everyone wants a piece of IoT</li>
+	          				<li>Even if they don't know what they're actually selling</li>
+	          				<li>No one size fits all solution</li>
+	          				<li>No connectivity standards across devices</li>
+	          				<li>Bluetooth, zigbee, z-wave, 6LowPAN, Thread, WiFi, NFC, Sigfox, Neul, LoRaWAN</li>
+	          				<li>Because different devices have different use-cases!!</li>
+	          				<li>Although some don't and should be standardised, samsung, lg, etc :|</li>
+	          			</ul>
+	        		</aside>
+				</section>
+
+				<section>
+					<section>
+						<h2>So what is IoT?</h2>
+							<ul>
+		         				<li>The Internet of Things!</li>
+		         				<li>Numerous protocols for communication</li>
+		         				<li>Everything is connected, from RFID to Bluetooth to WiFi and everything in between</em></li>
+	          					<li>How can we leverage this in new applications?
+		          					<ul>
+										<li>We want to take advantage of all this available data</li>
+									</ul>
+								</li>
+	          				</ul>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>This requires a different architecture than a typical web application</li>
+	          					<li>Many different devices, different data streams, different information</li>
+	          					<li>We don't want a different core application per device type</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>What's so difficult?</h2>
+						<ul>
+	         				<li>LOTS of devices
+								<ul>
+									<li>Tens of Billions and counting</li>
+								</ul>
+	         				</li>
+	         				<li>Privacy and Security</li>
+	         				<li>Scaling out
+	         					<ul>
+									<li>Much more difficult than scaling up</li>
+								</ul>
+							</li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>scaling out rather than up</li>
+	          					<li></li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>What's so difficult? cont...</h2>
+						<ul>
+	         				<li>Complexities of interoperability of devices
+								<ul>
+									<li>Protocols, Interfaces, Algorithms and Discovery</li>
+									<li>Standards are (very slowly) emerging</li>
+								</ul>
+	         				</li>
+	         				<li>Intermittent connectivity</li>
+	         				<li>What to do with all this data?!?
+	         					<ul>
+									<li>Big data needs big processing!</li>
+								</ul>
+							</li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>IoT-A for example</li>
+	          					<li></li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Many Devices</h2>
+						<ul>
+	         				<li>Devices often very “thin"
+	         					<ul>
+									<li>Lack processing power, memory and battery life</li>
+								</ul>
+							</li>
+	         				<li>Bandwidth Concerns
+	         					<ul>
+									<li>Data ain't cheap!!</li>
+								</ul>
+							</li>
+	         				<li>Need to process as much as possible on the server</li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Easier to manage if more processing is on the server</li>
+	          					<li>Sometimes we HAVE to process things on the device</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Many Emerging Architectures and Stacks</h2>
+						<ul>
+							<li>Lambda</li>
+							<li>Kappa</li>
+							<li>SMACK</li>
+							<li>Zeta</li>
+							<li>IoT-a</li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Greek letters are all the rage</li>
+	          					<li></li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+				</section>
+
+				<section>
+
+					<section>
+						<h2>Architectures</h2>
+						<h4>So what does this look like?</h4>
+						<img src="images/igotthis.jpg"/>
+						</p>
+					</section>
+
+					<section>
+						<h2>First... CAP Theorem</h2>
+						<ul>
+			         		<li><strong>Consistency</strong>
+			         			<ul>
+			         				<li>Across different partitions/nodes. Reads take previous writes into account.</li>
+			         				<li>Immediate not Eventual</li>
+		         				</ul>
+		         			</li>
+		         			<li><strong>Availability</strong>
+			         			<ul>
+			         				<li>The system is always available, responses are guaranteed.</li>
+		         				</ul>
+		         			</li>
+		         			<li><strong>Partition Tolerance</strong>
+			         			<ul>
+			         				<li>No single point of failure</li>
+			         				<li>Can handle a node disappearing</li>
+			         				<li>Replication across nodes</li>
+		         				</ul>
+		         			</li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Can only guarantee two of the three database properties</li>
+	          					<li>Basically a choice between Consistency and Partition tolerance
+	          						<ul>
+	          							<li>If you want scalability</li>
+	          						</ul>
+   								</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Lambda Architecture</h2>
+						<ul>
+			         		<li>Originally described by Nathan Marz, creator of Apache Storm</li>
+		         			<li>Claims to beat CAP theorem</li>
+		         			<li>Splits the application into three parts
+			         			<ul>
+			         				<li><strong>Batch</strong> and Realtime layers for ingesting data</li>
+			         				<li><strong>Serving</strong> layer for querying data</li>
+		         				</ul>
+		         			</li>
+		         			<li>Events (incoming data) are time based
+			         			<ul>
+			         				<li><strong>Immutable, append only</strong></li>
+			         				<li>Series of <em>Commands</em></li>
+			         				<li>No updates or deletes</li>
+			         				<li>Can replay the data</li>
+		         				</ul>
+		         			</li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Duplication between layers</li>
+	          					<li>Queries are executed upon a combination of the realtime and batch layers</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<img class="stretch" src="images/lambda-conceptual.png"/>
+					</section>
+
+					<section>
+						<h2>Lambda Architecture - Realtime Layer</h2>
+						<ul>
+			         		<li>Realtime layer handles new data</li>
+			         		<li>As accurate as possible, however the batch layer gives “the final answer</li>
+			         		<li>CAP complexity is isolated into this layer, which now only applies to the latest subset of data</li>
+			         		<li>No need to worry about corrupting the data</li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Realtime data not yet incorporated into the batch layer</li>
+	          					<li>Data replayed in batch layer</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Lambda Architecture - Batch Layer</h2>
+						<ul>
+			         		<li>Batch layer handles historical data</li>
+			         		<li>Queries in the realtime layer are recomputed after the data is persisted to the batch layer</li>
+			         		<li>Allows issues in the realtime layer to be corrected</li>
+			         		<li>More complex and involved computations, not time critical</li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Replaying data after fixing bugs etc</li>
+	          					<li>Data replayed in batch layer</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Lambda Architecture - Serving Layer</h2>
+						<ul>
+			         		<li>The two “views” are merged together to give a final answer by the serving layer
+			         			<ul>
+			         				<li>Batch layer is indexed for querying</li>
+		         				</ul>
+		         			</li>
+			         		<li>Many different options here depending on query use cases</li>
+			         		<li>Table/View per query?</li>
+	          			</ul>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>There's no standard way of implementing this layer</li>
+	          					<li>Cassandra, HBase, Apache Drill, VoltDB</li>
+	          					<li>We're just presenting aggregated views for fast querying</li>
+	          					<li>Could use Akka persistence and hold the latest state in memory</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<img class="stretch" src="images/lambda-logical.png"/>
+					</section>
+
+
+					<section>
+						<h2>Lambda Architecture - The good stuff</h2>
+						<ul>
+			         		<li>Fault Tolerant against both hardware and humans</li>
+			         		<li>Stores all input data unchanged, allowing for reprocessing
+			         			<ul>
+			         				<li>We do this in our Muvr application to re-categorise exercises with new models</li>
+		         				</ul>
+			         		</li>
+			         		<li>Allows for a realtime view of the data, plus a more accurate higher latency view
+			         		</li>
+			         		<li>Easy to make use of existing tools familiar to the team (Hadoop?)</li>
+	          			</ul>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Clean separation of concerns</li>
+	          					<li>If done correctly gives fast reads and fast writes</li>
+	          					<li>Scalable</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+
+					<section>
+						<h2>Lambda Architecture - The bad stuff</h2>
+						<ul>
+			         		<li>Assumes accurate results can’t be computed real-time</li>
+			         		<li>Duplicates the transformation and computation logic (code) in both layers</li>
+			         		<li>More complex to debug as a result of the two discrete implementations</li>
+			         		<li>Data still not immediately consistent, hence doesn’t beat CAP theorem</li>
+	          			</ul>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Duplication is a BIG issue here</li>
+	          					<li>Frameworks such as summingbird attempt to address this but aren't without their issues and complexities</li>
+	          					<li>Can be complex creating the required combined views</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Kappa Architecture</h2>
+						<ul>
+			         		<li>Coined by Jay Creps, formally of LinkedIn</li>
+		         			<li>Simplifies the Lambda architecture by removing the batch layer</li>
+		         			<li>Streams are capable of persisting the historical data
+			         			<ul>
+			         				<li>For example Kafka and Event Sourcing</li>
+		         				</ul>
+		         			</li>
+		         			<li>The assumption is that stream processing is powerful enough to process and transform the data real-time</li>
+		         			<li>Processed data can then be stored in a table for querying</li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Sometimes we can't process the data real time</li>
+	          					<li>We can still archive data for analytics jobs</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<img class="stretch" src="images/kappa-conceptual.png"/>
+					</section>
+
+					<section>
+						<h2>Kappa Architecture - Reprocessing</h2>
+						<ol>
+			         		<li>Start a second instance of the stream processor</li>
+		         			<li>Replay the data from the desired point in time</li>
+		         			<li>Output to a new table</li>
+		         			<li>Once complete, stop the original stream processor</li>
+		         			<li>Processed data can then be stored in a table for querying
+		         				<ul>
+	          						<li>Delete the old table</li>
+		          				</ul>
+		          			</li>
+	          			</ol>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Can be done in a live application</li>
+	          					<li>The original stream is the unaltered data</li>
+	          					<li>Can always be relied upon as it's unaltered</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<img class="stretch" src="images/lambda-logical.png"/>
+					</section>
+
+					<section>
+						<h2>Kappa Architecture - The good stuff</h2>
+						<ul>
+			         		<li>Fault Tolerant against both hardware and humans</li>
+			         		<li>No need to maintain two separate code bases for the layers</li>
+			         		<li>Data only reprocessed when stream processing code has changed
+			         			<ul>
+	          						<li>Potentially reduced hosting costs</li>
+		          				</ul>
+			         		</li>
+			         		<li>Many of the same advantages as the Lambda architecture</li>
+	          			</ul>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Clean separation of concerns</li>
+	          					<li>Still need to create aggregated views for fast querying</li>
+	          					<li>Depends on use case of course	          						
+		          					<ul>
+		          						<li>Posting the results vs making them available for querying</li>
+			          				</ul>
+			          			</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Kappa Architecture - The bad stuff</h2>
+						<ul>
+			         		<li>May be difficult / impossible to perform the computation on a large enough dataset
+			         			<ul>
+		          					<li>Stream window or stateful datasource / cache</li>
+		          					<li>Could introduce latency</li>
+			          			</ul>
+			         		</li>
+			         		<li>Often you’ll need to decide on a small “window” of historical data</li>
+			         		<li>Might not be sufficient for complex Machine Learning</li>
+	          			</ul>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Would still need to train models for machine learning, which means batch layer is escence</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Quick summary</h2>
+						<ul>
+			         		<li>Streams eveywhere!!</li>
+			         		<li>Separating history from current (aggregated) data
+			         			<ul>
+		          					<li>Denormalised output data</li>
+		          					<li>Input format doesn’t need to match output format</li>
+		          					<li>Immutability means Non-destructive writes</li>
+			          			</ul>
+			         		</li>
+			         		<li>Not new ideas, just a different way of thinking about them</li>
+			         		<li>Enforce a company wide data format for messages early on</li>
+	          			</ul>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>High throughput important</li>
+	          					<li>Some ideas of ESBs apply here, better decoupling</li>
+	          					<li>AVRO (Schemas)</li>
+	          					<li>Schema ensures data correctness, improves clarity and understanding, improves compatibility</li>
+	          					<li>Loose coupling</li>
+	          					<li>Dealing with Schema evolution</li>
+	          					<li>Dealing with corrupt Schemas</li>
+	          					<li>Can use DB in combination with journal for historical data</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Muvr use case</h2>
+						<ul>
+							Originally used classic Lambda
+			         		<li>Akka cluster for speed layer</li>
+			         			<ul>
+			         				<li>One Actor per user</li>
+			         				<li>CQRS and (Akka) Event Sourcing</li>
+		         				</ul>
+		         			<li>Spark (ML) batch layer</li>
+			         			<ul>
+			         				<li>Trains the classifiers</li>
+		         				</ul>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Explain what Muvr is!</li>
+	          					<li>Great in theory!</li>
+	          				</ul>
+	          			</aside>
+					</section>	
+
+					<section>
+						<img class="stretch" src="images/muvr-lambda-wrong.png"/>
+					</section>		
+
+					<section>
+						<h2>Muvr use case - revised</h2>
+						<ul>
+							<span>Simply no good in production!</span>
+			         		<li>Latency too high</li>
+			         			<ul>
+			         				<li>Too sensitive to network</li>
+			         				<li>Required always on connectivity</li>
+		         				</ul>
+		         			<li>We had to move the speed layer onto the device</li>
+			         			<ul>
+			         				<li>Or rather split it between server and device</li>
+		         				</ul>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>It's designed to be used in a gym!!</li>
+	          				</ul>
+	          			</aside>
+					</section>	
+
+					<section>
+						<img class="stretch" src="images/muvr-lambda-updated.png"/>
+					</section>	
+
+					<section>
+						<h2>S.M.A.C.K</h2>
+			
+	          			<img class="stretch" src="images/smack.png"/>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>These technologies are being used together more and more</li>
+	          				</ul>
+	          			</aside>
+					</section>		
+
+					<section>
+						<h2>S.M.A.C.K</h2>
+						<ul>
+			         		<li><strong>S</strong>park</li>
+			         			<ul>
+			         				<li>Fast, distributed data processing and analytics engine</li>
+		         				</ul>
+		         			</li>
+		         			<li><strong>M</strong>esos</li>
+			         			<ul>
+			         				<li>Cluster resource management solution providing resource isolation and sharing across distributed systems</li>
+		         				</ul>
+		         			</li>
+		         			<li><strong>A</strong>kka</li>
+			         			<ul>
+			         				<li>Actor based JVM framework for building highly scalable, concurrent distributed message-driven applications</li>
+		         				</ul>
+		         			</li>
+		         			<li><strong>C</strong>assandra</li>
+			         			<ul>
+			         				<li>Highly available, distributed, scalable database designed to handle huge amounts of data across multiple data centers</li>
+		         				</ul>
+		         			</li>
+		         			<li><strong>K</strong>afka</li>
+			         			<ul>
+			         				<li>A high-throughput, low-latency distributed stream based messaging system designed to handle and persist events</li>
+		         				</ul>
+		         			</li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li></li>
+	          					<li></li>
+	          				</ul>
+	          			</aside>
+					</section>
+				
+				</section>
+
+				<section>
+					<section>
+						<img class="stretch" src="images/spark.png"/>
+						<aside class="notes">
+							<ul>
+		          				<li>Key to all these fancy architectures</li>
+		          				<li>becoming the defacto data processing engine</li>
+		          			</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Apache Spark</h2>
+
+						<span>Apache Spark™ is a fast and general engine for large-scale data processing, with built-in modules for streaming, SQL, machine learning and graph processing</span>
+
+						<ul>
+	          				<li>Originally developed by Berkeley’s AMP Lab in 2009</li>
+	          				<li>Open sourced as part of Berkeley Data Analytics Stack (BDAS) in 2010</li>
+	          				<li>Top level apache project since 2014</li>
+	          			</ul>
+	          			<aside class="notes">
+							<ul>
+		          				<li>Spark provides rich APIs in Java, Scala, Python, and R</li>
+		          				<li>The fundamental programming abstraction in Spark is the Resilient Distributed Dataset (RDD)</li>
+		          				<li>can be have crazy performance improvements over vanilla MapReduce</li>
+		          				<li>Spark runs on Hadoop, Mesos, standalone, or in the cloud. It can access diverse data sources including HDFS, Cassandra, HBase, and S3</li>
+		          			</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Who uses Spark</h2>
+
+						<img class="stretch" src="images/powered-by-spark.png"/>
+					</section>
+
+					<section>
+						<h2>Why Spark</h2>
+
+						<img src="images/spark-github.png"/>
+
+						<ul>
+	          				<li>Contributers from over 200 companies</li>
+	          				<li>One of the most active open source projects</li>
+	          				<li>IBM will invest roughly $300 million over the next few years and assign 3500 people to help develop Spark</li>
+	          			</ul>
+	          			<aside class="notes">
+							<ul>
+		          				<li></li>
+		          			</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Why Spark cont...</h2>
+						<ul>
+	          				<li>Easy to develop
+	          					<ul>
+			         				<li>Flexible, composable programming model</li>
+			         				<li>Provides Spark Shell</li>
+			         				<li>APIs for Scala, Java and Python</li>
+		         				</ul>
+	          				</li>
+	          				<li>Fast and Scalable!
+	          					<ul>
+			         				<li>Optimised storage between memory and disk</li>
+			         				<li>Scales from a single laptop to a large cluster</li>
+			         				<li>Up to 10x-100x faster than Hadoop</li>
+		         				</ul>
+	          				</li>
+	          				<li>Feature Rich
+	          					<ul>
+			         				<li>Supports Event Streaming Applications</li>
+			         				<li>Efficient support for Machine Learning</li>
+			         				<li>Modular architecture</li>
+		         				</ul>
+	          				</li>
+	          			</ul>
+	          			<aside class="notes">
+							<ul>
+								<li>Lazily evaluates this so that...</li>
+		          				<li>Spark can work out the most efficient way to do things</li>
+		          			</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Spark usage scenarios</h2>
+						<ul>
+	          				<li>On demand querying of large datasets</li>
+	          				<li>Batch processing</li>
+	          				<li>Machine Learning</li>
+	          				<li>Stream Processing</li>
+	          				<li>Data Transformations</li>
+	          				<li>Graph processing</li>
+	          			</ul>
+	          			<aside class="notes">
+							<ul>
+		          				<li>Modular architecture makes it easy to extend functionality</li>
+		          				<li>Spark needs data from somewhere, it's not a database</li>
+		          				<li>So going back to previous slides, spark can run as the batch layer, running analytics which can them be output to tables (lambda)</li>
+		          				<li>Or we can run a Spark Streaming job which can perform smaller calculations on the fly (Kappa) - on the fly</li>
+		          				<li>Could actually re-use a lot of the code between layers</li>
+		          			</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Interactive Shells</h2>
+						
+						<ul>
+							<li><code>spark-shell</code>
+	          					<ul>
+			         				<li>Extended Scala REPL with Spark imports already in scope</li>
+		         				</ul>
+	          				</li>
+	          				<li><code>spark-submit</code>
+	          					<ul>
+			         				<li>Extended Scala REPL with Spark imports already in scope</li>
+		         				</ul>
+	          				</li>
+	          				<li><code>spark-sql</code>
+	          					<ul>
+			         				<li>SQL REPL</li>
+		         				</ul>
+	          				</li>
+	          				<li><code>pyspark</code>
+	          					<ul>
+			         				<li>Python shell</li>
+		         				</ul>
+	          				</li>
+	          			</ul>
+	          			<aside class="notes">
+							<ul>
+		          				<li>Shells make programming so much easier</li>
+		          			</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						Add Spark Shell image
+						<img class="stretch" src="images/..."/>
+					</section>
+
+					<section>
+						<h2>Monitoring</h2>
+						
+						<ul>
+							<li><code>http://localhost:4040</code>
+	          					<ul>
+			         				<li>Spark’s “stages” job console. Started by the SparkContext.</li>
+		         				</ul>
+	          				</li>
+	          				<li><code>http://master_host_name:4040</code>
+	          					<ul>
+			         				<li>For Spark Standalone clusters, the Spark Master.</li>
+		         				</ul>
+	          				</li>
+	          				<li><code>http://slave_host_name:7077</code>
+	          					<ul>
+			         				<li>For Spark slave nodes</li>
+		         				</ul>
+	          				</li>
+	          			</ul>
+	          			<aside class="notes">
+							<ul>
+		          				<li>Shells make programming so much easier</li>
+		          			</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						Add monitoring console image
+						<img class="stretch" src="images/..."/>
+					</section>
+
+					<section>
+						<h2>Spark Stack</h2>
+
+						<img class="stretch" src="images/spark-stack.png"/>
+
+						<aside class="notes">
+							<ul>
+		          				<li>Architecture allows new modules to be added</li>
+		          				<li>Spark Core is the underlying general execution engine for the Spark platform that all other functionality is built on top of. It provides in-memory computing capabilities to deliver speed, a generalized execution model to support a wide variety of applications, and Java, Scala, and Python APIs for ease of development.</li>
+		          			</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Spark Cluster Overview</h2>
+
+						<img class="stretch" src="images/spark-cluster-abstraction.png"/>
+
+						<aside class="notes">
+							<ol>
+								<li>Driver connects to manager. Asks it for resources</li>
+								<li>Manager assigns nodes, allocates resources</li>
+								<li>Executor started on each assigned node, isolated from other applications</li>
+								<li>Application sent to executors</li>
+								<li>Tasks sent to executors and started on nodes - multi threaded</li>
+							</ol>
+							<ul>
+		          				<li>So what does the architecture look like?</li>
+		          				<li>Executor lives for the length of the whole application (1-1).</li>
+		          				<li>Can run large computation over lots of data, need a cluster</li>
+		          				<li>On each node you want to run a Spark worker, if that's with Cassandra you'd generally want to have a Cassandra instance running on the same node. DSE makes this much easier by pretty much doing this for you</li>
+		          				<li>A Job consistens of multiple tasks spawned in response to a Spark action</li>
+		          				<li>The cluster manager manages all these workers, yarn or mesos could do this for you</li>
+		          				<li>The driver is where your code lives, you can submit a packaged application or use the REPL</li>
+		          				<li>The driver is the SparkContext, which connects to the cluster manager</li>
+
+		          			</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>RDDs</h2>
+						<ul>
+							<li>Immutable
+	          					<ul>
+			         				<li>Each transformation will create a new RDD</li>
+		         				</ul>
+	          				</li>
+	          				<li>Lazy
+	          					<ul>
+			         				<li>A DAG (directed acyclic graph) of computation is constructed</li>
+			         				<li>The actual data is processed only when an action invoked</li>
+		         				</ul>
+	          				</li>
+	          				<li>Reusable
+	          					<ul>
+			         				<li>Can re-use RDDs executing them multiple times</li>
+		         				</ul>
+	          				</li>
+						</ul>
+
+						<aside class="notes">
+							<ul>
+								<li>An RDD is simply an immutable distributed collection of objects that can be operated on in paralell</li>
+								<li>RDDs are the workhorse of Spark, everything is done using RDDs.</li>
+								<li>Everything is expressed as either creating new RDDs, transforming existing RDDs, or calling operations on RDDs to compute a result</li>
+		          				<li>Each RDD is split into multiple partitions, which may be computed on different nodes of the cluster</li>
+		          				<li>Users create RDDs in three ways: from an RDD, by loading an external dataset, or by distributing a collection of objects (e.g., a list or set) in their driver program, not done in production as the whole dataset must be in memory</li>	
+		          				<li>Persistent in memory between operations</li>	     
+		          			</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>RDD Breakdown</h2>
+						<img class="stretch" src="images/rdd.png"/>
+
+						<ul>
+			         			<li>List of partitions: Where the data lives in the cluster</li>
+			         			<li>A function for computing each split: which becomes a partition</li>
+			         			<li>Ancestor RDD lineage: So lost partitions can be reconstructed</li>
+			       				<li>For PairRDDs, a "partitioner", which specifies how to partition data using the keys</li>
+						</ul>
+
+						<aside class="notes">
+							<ul>	
+		          				<li>Partitions never span multiple machines, i.e. tuples in the same partition are guaranteed to be on the same machine.</li>	 
+								<li>Each machine in the cluster contains one or more partitions.</li>
+								<li>The number of partitions to use is configurable. By default, it equals the total number of cores on all executor nodes.</li>       
+		          			</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>RDD Operations</h2>
+						RDD operations are split into two distinct categories
+						<p/>
+						<ul>
+							<li><strong>Transformations</strong>
+	          					<ul>
+			         				<li>Returns a new RDD which will apply the transformation</li>
+			         				<li>Can merge multiple RDDs into a new RDD (<code>union</code>)</li>
+			         				<li><code>map, filter, flatMap, mapPartitions, join</code></li>
+		         				</ul>
+	          				</li>
+	          				<li><strong>Actions</strong>
+	          					<ul>
+	          						<li>Force evaluation of the transformations</li>
+			         				<li>Return a final <strong>value</strong> to the driver program or write data to an external storage system. </li>		         	
+			         				<li><code>reduce, collect, count, saveAs**, foreach</code></li>
+		         				</ul>
+	          				</li>
+						</ul>
+
+						<aside class="notes">
+							<ul>
+								<li>No substantial benefit to writing a single complex map instead of chaining together many simple operations.</li>
+								<li>Each operation can be executed on a different node</li>
+								<li>There are different types of RDDs, for example Numeric RDDS and PairRDDS... Each has some additional operations available. mean for example</li>
+								<li>PairRDDs are really powerful and can be used to control the partitioning of data by key, reducing shuffling of data. Each key can then executed in parallel across nodes</li>
+								<li>Using PairRDDs lets you perform operations just on values, much more efficient as the data will be on the same partition</li>
+								     
+		          			</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>RDD Lineage</h2>
+						<img class="stretch" src="images/rdd-lineage.png"/>
+						<p/>
+						<ul>
+							<li>Each operation on an RDD creates a new RDD, with the previous operation as part of it's history.</li>
+	          				<li>A lost RDD partition is reconstructed from ancestors</li>
+	          				<li>By default the whole RDD lineage is executed when an action is invoked
+	          					<ul>
+	          						<li>We can avoid this by caching (persisting) at various stages</li>
+	          					</ul>
+	          				</li>
+						</ul>
+
+						<aside class="notes">
+							<ul>
+								<li>RDDs know their parents, which also know their parents...</li>
+								<li>As you derive new RDDs from each other using transformations, Spark keeps track of the set of dependencies between different RDDs, called the lineage graph. It uses this information to compute each RDD on demand and to recover lost data if part of a persistent RDD is lost.</li>	        
+		          			</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Basic Word Count</h2>
+
+						<span>First we need the appropriate imports</span>
+
+						<pre><code data-trim class="scala">
+TODO
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li></li>
+	          					<li></li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Basic Word Count (cont...)</h2>
+
+						<span>We can now create out <code>SparkContext</code> and from that an RDD</span>
+
+						<pre><code data-trim class="scala">
+TODO
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li></li>
+	          					<li></li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Basic Word Count (cont...)</h2>
+
+						<span>From there we can transform the RDD and execute it</span>
+
+						<pre><code data-trim class="scala">
+TODO
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li></li>
+	          					<li></li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+				</section>
+
+				<section>
+
+					<section>
+						<h2>Spark Streaming Intro</h2>
+
+						<img class="stretch" src="images/streaming-arch.png"/>
+						<ul>
+			         		<li>High-throughput streaming from live events</li>
+		         			<li>Run event based computations and update data in real-time</li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Data can be ingestedby RECEIVERS from many sources like Kafka, Flume, Twitter, ZeroMQ, Kinesis, or TCP sockets, and can be processed using complex algorithms expressed with high-level functions like map, reduce, join and window.</li>
+	          					<li>Can have reliable and unreliable receivers</li>
+	          					<li>Can store raw data or aggregated (processed) data... or both!</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Spark Streaming Intro (cont...)</h2>
+
+						<img class="stretch" src="images/streaming-flow.png"/>
+						<ul>
+			         		<li>Data is grouped into batch windows for processing</li>
+		         			<li>The &quot;batch interval&quot; is configurable</li>
+		         			<li>Spark provides a high level abstraction called a <em>discretized stream</em> or <code>DStream</code></li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Spark receives live input data streams and divides the data into micro batches, which are then processed by the Spark engine to generate the final stream of results in batches</li>
+	          					<li>Micro-batches of data are created at regular time intervals.</li>
+	          					<li>This stream of micro batches is known as a DStream</li>
+	          					<li>DStreams created from input streams or other DStreams</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>DStreams</h2>
+
+						<img class="stretch" src="images/streaming-flow-rdd.png"/>
+						<ul>
+			         		<li>A DStream is a continuous sequence of RDDs
+			         			<ul>
+					         		<li>Each micro batch of data is an RDD</li>
+			          			</ul>
+			          		</li>
+		         			<li>Each RDD has lineage and fault tolerance</li>
+		         			<li>Transformations similar to those on normal RDDs are applicable</li>
+		         			<li>There are many additional transformations and output operations that are only applicable to discretized streams</li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Any operation applied on a DStream translates to operations on the underlying RDDs</li>
+	          					<li>Batch interval or time step is used to configure this, typically between 500ms and several seconds</li>
+	          					<li>Transformations are called on a DStream and applied to each RDD individually</li>
+	          					<li>Both stateless and stateful transformations</li>
+	          					<li>Stateful transformaitons can be used to keep counts or process aggregations on the fly</li>
+	          					<li>Although aggregating in something like Cassandra is recommended instead</li>
+	          					<li></li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Windowed DStreams</h2>
+
+						<img class="stretch" src="images/streaming-windowed.png"/>
+						<ul>
+			         		<li>Can compute results based on data in multiple batches</li>
+		         			<li>Known as window(ed) transformations</li>
+		         			<li>Carried over multiple batches in a sliding window</li>
+		         			<li>Specify the <em>window length</em> and <em>sliding interval</em></li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li><em>window length</em> - The duration of the window (3 in the figure).</li>
+								<li><em>sliding interval</em> - The interval at which it's performed (2 in the figure).</li>
+	          					<li>Requires a checkpoint directory for stateful transformations</li>
+	          					<li>For fault tolerance</li>
+	          					<li>The configuration allows you to define the overlap for stateful transformations</li>
+	          					<li>Every time the window slides over a source DStream, the source RDDs that fall within the window are combined and operated upon to produce the RDDs of the windowed DStream. 
+	          					</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Basic Stream Printer</h2>
+
+						<span>First we need the appropriate imports</span>
+
+						<pre><code data-trim class="scala">
+TODO
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li></li>
+	          					<li></li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Basic Stream Printer (cont...)</h2>
+
+						<span>Now lets aggregate and print the batches</span>
+
+						<pre><code data-trim class="scala">
+TODO
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Once a context has been started, no new streaming computations can be set up or added to it.</li>
+								<li>Once a context has been stopped, it cannot be restarted.</li>
+								<li>Only one StreamingContext can be active in a JVM at the same time.</li>
+	          					<li></li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+				</section>
+
+
+				<section>
+
+					<section>
+						<h2>Spark on Cassandra</h2>
+						<img class="stretch" src="images/spark-on-cassandra.png"/>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Specifically on DSE which makes deployment much easier</li>
+	          					<li>A Spark worker is spawned which is responsible for the executors. </li>
+	          					<li>This has it’s own memory allocation which isolates it from Cassandra</li>
+	          					<li>Each worker node sits on an analytics only Cassandra DSE instance with an analytics data centre</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Deployment on Cassandra</h2>
+						<img class="stretch" src="images/cassandra-spark-dc.png"/>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Spark specific data center</li>
+	          					<li>Prevents Spark interferring with norml queries</li>
+	          					<li>Data is replicated between the data centres, both read+write</li>
+	          					<li>Configured using the dse.yaml</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Spark Cassandra Connector</h2>
+						<ul>
+			         		<li>Open source connector, not DSE specific</li>
+		         			<li>Takes into account data location</li>
+		         			<li>Spark partitions are constructed from data stored by C* on the same node</li>
+		         			<li>Partitions are not computed until an action is seen</li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>Shuffling is expensive, so important to get partitioning correct</li>
+	          					<li>Some operations explicitly shuffle data</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Cassandra Connector Partitioning</h2>
+						<ul>
+			         		<li></li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li></li>
+	          					<li></li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Cassandra Stream Word Count</h2>
+
+						<span>First we need the appropriate imports</span>
+
+						<pre><code data-trim class="scala">
+TODO
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li></li>
+	          					<li></li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>How this fits into our architecture(s)</h2>
+						<ul>
+			         		<li></li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li></li>
+	          					<li></li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+				</section>
+
+				<section>
+					<h2>It's been emotional...</h2>
+			        <ul>
+			        	<li>Slides at <a href="http://markglh.github.io/AkkaStreams-Madlab-Slides">http://markglh.github.io/AkkaStreams-Madlab-Slides</a></li>
+			         	<li>Follow me <a href="https://twitter.com/markglh">@markglh</a></li>
+			        </ul>
+			        </br></br>
+			        <img class="fragment fade-in" src="images/ned-questions.jpg"/>
+				</section>
+			</div>
+
+		</div>
+
+		<script src="reveal.js/lib/js/head.min.js"></script>
+		<script src="reveal.js/js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
