@@ -42,8 +42,7 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section>
-					<h1>Big Data in IoT</h1>
-					<h3>Why do we need a different approach?</h3>
+					<h1>Architectural challenges of IoT and Big Data</h1>
 					<h5>Plus a dose of Spark for good measure :)</h5>
 					<p>
 						<small>Created by <a href="https://github.com/markglh">Mark Harrison</a> / <a href="http://twitter.com/markglh">@markglh</a></small>
@@ -59,32 +58,37 @@
 				</section>
 
 				<section>
-	          		<img class="stretch" src="images/meme-internet_all_the_things.png"/>
-	          		<aside class="notes">
-	          			<ul>
-	          				<li>IoT is nothing new</li>
-	          				<li>It's just a buzzword used to describe the connection of remote "things"</li>
-	          				<li>The key is those devices all collect and exchange data over the internet</li>
-	          			</ul>
-	        		</aside>
+	          		<img class="stretch" src="images/assumptions.jpg"/>
 				</section>
 
 				<section>
-	          		<img class="stretch" src="images/meme-wesellthose.jpg"/>
-	          		<aside class="notes">
-	          			<ul>
-	          				<li>Everyone wants a piece of IoT</li>
-	          				<li>Even if they don't know what they're actually selling</li>
-	          				<li>No one size fits all solution</li>
-	          				<li>No connectivity standards across devices</li>
-	          				<li>Bluetooth, zigbee, z-wave, 6LowPAN, Thread, WiFi, NFC, Sigfox, Neul, LoRaWAN</li>
-	          				<li>Because different devices have different use-cases!!</li>
-	          				<li>Although some don't and should be standardised, samsung, lg, etc :|</li>
-	          			</ul>
-	        		</aside>
-				</section>
 
-				<section>
+					<section>
+		          		<img class="stretch" src="images/meme-internet_all_the_things.png"/>
+		          		<aside class="notes">
+		          			<ul>
+		          				<li>IoT is nothing new</li>
+		          				<li>It's just a buzzword used to describe the connection of remote "things"</li>
+		          				<li>The key idea is all those devices collect and exchange data over the internet</li>
+		          			</ul>
+		        		</aside>
+					</section>
+
+					<section>
+		          		<img class="stretch" src="images/meme-wesellthose.jpg"/>
+		          		<aside class="notes">
+		          			<ul>
+		          				<li>Everyone wants a piece of IoT</li>
+		          				<li>Even if they don't know what they're actually selling</li>
+		          				<li>No one size fits all solution</li>
+		          				<li>No connectivity standards across devices</li>
+		          				<li>Bluetooth, zigbee, z-wave, 6LowPAN, Thread, WiFi, NFC, Sigfox, Neul, LoRaWAN</li>
+		          				<li>Because different devices have different use-cases!!</li>
+		          				<li>Although some don't and should be standardised, samsung, lg, etc :|</li>
+		          			</ul>
+		        		</aside>
+					</section>
+
 					<section>
 						<h2>So what is IoT?</h2>
 							<ul>
@@ -99,58 +103,7 @@
 	          				</ul>
 	          			<aside class="notes">
 	          				<ul>
-	          					<li>This requires a different architecture than a typical web application</li>
-	          					<li>Many different devices, different data streams, different information</li>
-	          					<li>We don't want a different core application per device type</li>
-	          				</ul>
-	          			</aside>
-					</section>
-
-					<section>
-						<h2>What's so difficult?</h2>
-						<ul>
-	         				<li>LOTS of devices
-								<ul>
-									<li>Tens of Billions and counting</li>
-								</ul>
-	         				</li>
-	         				<li>Privacy and Security</li>
-	         				<li>Scaling out
-	         					<ul>
-									<li>Much more difficult than scaling up</li>
-								</ul>
-							</li>
-	          			</ul>
-
-	          			<aside class="notes">
-	          				<ul>
-	          					<li>scaling out rather than up</li>
-	          					<li></li>
-	          				</ul>
-	          			</aside>
-					</section>
-
-					<section>
-						<h2>What's so difficult? cont...</h2>
-						<ul>
-	         				<li>Complexities of interoperability of devices
-								<ul>
-									<li>Protocols, Interfaces, Algorithms and Discovery</li>
-									<li>Standards are (very slowly) emerging</li>
-								</ul>
-	         				</li>
-	         				<li>Intermittent connectivity</li>
-	         				<li>What to do with all this data?!?
-	         					<ul>
-									<li>Big data needs big processing!</li>
-								</ul>
-							</li>
-	          			</ul>
-
-	          			<aside class="notes">
-	          				<ul>
-	          					<li>IoT-A for example</li>
-	          					<li></li>
+	          					
 	          				</ul>
 	          			</aside>
 					</section>
@@ -158,6 +111,7 @@
 					<section>
 						<h2>Many Devices</h2>
 						<ul>
+							<li>Tens of Billions and counting</li>
 	         				<li>Devices often very “thin"
 	         					<ul>
 									<li>Lack processing power, memory and battery life</li>
@@ -178,6 +132,39 @@
 	          				</ul>
 	          			</aside>
 					</section>
+
+					<section>
+						<h2>What's so difficult?</h2>
+						<ul>        				
+	         				<li>Scaling out
+	         					<ul>
+									<li>Much more difficult than scaling up</li>
+									<li>This requires a different architecture than a typical web application</li>
+	          						<li>Many different devices, different data streams, different information</li>
+	          						<li>We don't want a different core application per device type</li>
+								</ul>
+							</li>
+							<li>What to do with all this data?!?
+		         					<ul>
+										<li>Big data needs big processing!</li>
+									</ul>
+								</li>
+	          			</ul>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>scaling out rather than up</li>
+	          					<li>Privacy and Security concerns</li>
+	          					<li>Complexities of interoperability of devices
+									<ul>
+										<li>Protocols, Interfaces, Algorithms and Discovery</li>
+										<li>Standards are (very slowly) emerging</li>
+									</ul>
+		         				</li>
+		         				<li>Intermittent connectivity</li>		         				
+	          				</ul>
+	          			</aside>
+					</section>					
 
 					<section>
 						<h2>Many Emerging Architectures and Stacks</h2>
@@ -210,16 +197,34 @@
 
 					<section>
 						<h2>First... CAP Theorem</h2>
+						<h4>So what does this look like?</h4>
+						<img src="images/cap-theorum.png"/>
+						</p>
+
+						<aside class="notes">
+	          				<ul>
+	          					<li>Basically a choice between Consistency and Partition tolerance
+	          						<ul>
+	          							<li>If you want scalability</li>
+	          						</ul>
+   								</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>First... CAP Theorem (cont...)</h2>
 						<ul>
 			         		<li><strong>Consistency</strong>
 			         			<ul>
-			         				<li>Across different partitions/nodes. Reads take previous writes into account.</li>
+			         				<li>Across different partitions/nodes. Every client has the same view.</li>
 			         				<li>Immediate not Eventual</li>
 		         				</ul>
 		         			</li>
 		         			<li><strong>Availability</strong>
 			         			<ul>
 			         				<li>The system is always available, responses are guaranteed.</li>
+			         				<li>Your queries are always executed.</li>
 		         				</ul>
 		         			</li>
 		         			<li><strong>Partition Tolerance</strong>
@@ -245,12 +250,26 @@
 
 					<section>
 						<h2>Lambda Architecture</h2>
+						<img class="stretch" src="images/lambda-conceptual.png"/>
+
+						<aside class="notes">
+	          				<ul>
+	          					<li>An immutable sequence of records is captured and fed in</li>
+	          					<li>Queries are executed upon a combination of the realtime and batch layers</li>
+	          					<li>Events are persisted to be replayed, either using kafka on input or to a historical database</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+
+					<section>
+						<h2>Lambda Architecture (cont...)</h2>
 						<ul>
 			         		<li>Originally described by Nathan Marz, creator of Apache Storm</li>
 		         			<li>Claims to beat CAP theorem</li>
 		         			<li>Splits the application into three parts
 			         			<ul>
-			         				<li><strong>Batch</strong> and Realtime layers for ingesting data</li>
+			         				<li><strong>Batch</strong> and <strong>Realtime</strong> layers for ingesting data</li>
 			         				<li><strong>Serving</strong> layer for querying data</li>
 		         				</ul>
 		         			</li>
@@ -273,14 +292,10 @@
 					</section>
 
 					<section>
-						<img class="stretch" src="images/lambda-conceptual.png"/>
-					</section>
-
-					<section>
 						<h2>Lambda Architecture - Realtime Layer</h2>
 						<ul>
 			         		<li>Realtime layer handles new data</li>
-			         		<li>As accurate as possible, however the batch layer gives “the final answer</li>
+			         		<li>As accurate as possible, however the batch layer gives “the final answer"</li>
 			         		<li>CAP complexity is isolated into this layer, which now only applies to the latest subset of data</li>
 			         		<li>No need to worry about corrupting the data</li>
 	          			</ul>
@@ -347,7 +362,6 @@
 			         		</li>
 			         		<li>Allows for a realtime view of the data, plus a more accurate higher latency view
 			         		</li>
-			         		<li>Easy to make use of existing tools familiar to the team (Hadoop?)</li>
 	          			</ul>
 	          			<aside class="notes">
 	          				<ul>
@@ -378,6 +392,11 @@
 
 					<section>
 						<h2>Kappa Architecture</h2>
+						<img class="stretch" src="images/kappa-conceptual.png"/>
+					</section>
+
+					<section>
+						<h2>Kappa Architecture (cont...)</h2>
 						<ul>
 			         		<li>Coined by Jay Creps, formally of LinkedIn</li>
 		         			<li>Simplifies the Lambda architecture by removing the batch layer</li>
@@ -396,10 +415,6 @@
 	          					<li>We can still archive data for analytics jobs</li>
 	          				</ul>
 	          			</aside>
-					</section>
-
-					<section>
-						<img class="stretch" src="images/kappa-conceptual.png"/>
 					</section>
 
 					<section>
@@ -426,7 +441,7 @@
 					</section>
 
 					<section>
-						<img class="stretch" src="images/lambda-logical.png"/>
+						<img class="stretch" src="images/kappa-logical.png"/>
 					</section>
 
 					<section>
@@ -620,7 +635,7 @@
 					<section>
 						<h2>Apache Spark</h2>
 
-						<span>Apache Spark™ is a fast and general engine for large-scale data processing, with built-in modules for streaming, SQL, machine learning and graph processing</span>
+						<span>Apache Spark™ is a fast and general purpose engine for large-scale data processing, with built-in modules for streaming, SQL, machine learning and graph processing</span>
 
 						<ul>
 	          				<li>Originally developed by Berkeley’s AMP Lab in 2009</li>
@@ -764,28 +779,39 @@
 					</section>
 
 					<section>
+						<h2>Spark Jobs</h2>
+
+						<img class="stretch" src="images/spark-job-scheduling.png"/>
+
+						<aside class="notes">
+							Directed Acyclic Graph
+							<ul>								
+		          				<li>The driver breaks the RDD graph down into jobs</li>
+		          				<li>Each job is composed of stages</li>
+		          				<li>Stages get implemented by one or more tasks</li>
+		          				<li>Tasks are sent to the executors to perform the work</li>
+		          			</ul>
+	          			</aside>
+					</section>
+
+					<section>
 						<h2>Spark Cluster Overview</h2>
 
 						<img class="stretch" src="images/spark-cluster-abstraction.png"/>
 
 						<aside class="notes">
-							<ol>
+							<ol>							
 								<li>Driver connects to manager. Asks it for resources</li>
 								<li>Manager assigns nodes, allocates resources</li>
 								<li>Executor started on each assigned node, isolated from other applications</li>
-								<li>Application sent to executors</li>
 								<li>Tasks sent to executors and started on nodes - multi threaded</li>
 							</ol>
 							<ul>
-		          				<li>So what does the architecture look like?</li>
+								<li>Each application gets its own executor processes, which stay up for the duration of the whole application and run tasks in multiple threads.</li>
 		          				<li>Executor lives for the length of the whole application (1-1).</li>
-		          				<li>Can run large computation over lots of data, need a cluster</li>
-		          				<li>On each node you want to run a Spark worker, if that's with Cassandra you'd generally want to have a Cassandra instance running on the same node. DSE makes this much easier by pretty much doing this for you</li>
-		          				<li>A Job consistens of multiple tasks spawned in response to a Spark action</li>
+		          				<li>A Job consistens of multiple tasks spawned in response to a Spark action</li>		          			     				
 		          				<li>The cluster manager manages all these workers, yarn or mesos could do this for you</li>
 		          				<li>The driver is where your code lives, you can submit a packaged application or use the REPL</li>
-		          				<li>The driver is the SparkContext, which connects to the cluster manager</li>
-
 		          			</ul>
 	          			</aside>
 					</section>
@@ -801,22 +827,21 @@
 	          				<li>Lazy
 	          					<ul>
 			         				<li>A DAG (directed acyclic graph) of computation is constructed</li>
-			         				<li>The actual data is processed only when an action invoked</li>
+			         				<li>The actual data is processed only when an action is invoked</li>
 		         				</ul>
 	          				</li>
 	          				<li>Reusable
 	          					<ul>
-			         				<li>Can re-use RDDs executing them multiple times</li>
+			         				<li>Can re-use RDDs by executing them multiple times</li>
 		         				</ul>
 	          				</li>
 						</ul>
 
 						<aside class="notes">
 							<ul>
-								<li>An RDD is simply an immutable distributed collection of objects that can be operated on in paralell</li>
+								<li>An RDD is an immutable distributed collection of objects that can be operated on in parallel</li>
 								<li>RDDs are the workhorse of Spark, everything is done using RDDs.</li>
 								<li>Everything is expressed as either creating new RDDs, transforming existing RDDs, or calling operations on RDDs to compute a result</li>
-		          				<li>Each RDD is split into stages of tasks, which are submitted to the cluster manager and may be computed on different nodes of the cluster</li>
 		          				<li>Users create RDDs in three ways: from an RDD, by loading an external dataset, or by distributing a collection of objects (e.g., a list or set) in their driver program, not done in production as the whole dataset must be in memory</li>	
 		          				<li>Persistent in memory between operations</li>	     
 		          			</ul>
@@ -824,24 +849,33 @@
 					</section>
 
 					<section>
-						<h2>RDD Breakdown</h2>
-						<img class="stretch" src="images/rdd.png"/>
+						<h2>RDD Partitions</h2>
+						<img class="stretch" src="images/rdd-partitions.png"/>
 
-						<ul>
-			         			<li>List of partitions: Where the data lives in the cluster</li>
-			         			<li>A function for computing each split: which becomes a partition</li>
-			         			<li>Ancestor RDD lineage: So lost partitions can be reconstructed</li>
-			       				<li>For PairRDDs, a "partitioner", which specifies how to partition data using the keys</li>
-						</ul>
 
 						<aside class="notes">
-							<ul>	
-		          				<li>Partitions never span multiple machines, i.e. tuples in the same partition are guaranteed to be on the same machine.</li>	 
-								<li>Each machine in the cluster contains one or more partitions.</li>
-								<li>The number of partitions to use is configurable. By default, it equals the total number of cores on all executor nodes.</li>       
+							<ul>
+								<li>RDD is divided into partitions which are districuted across the cluster</li>	
+								<li>Partitions never span multiple machines, i.e. tuples in the same partition are guaranteed to be on the same machine.</li>	 
+								<li>The number of partitions to use is configurable. By default, it equals the total number of cores on all executor nodes.</li>         
 		          			</ul>
 	          			</aside>
 					</section>
+
+					<section>
+						<h2>RDD Tasks</h2>
+						<img class="stretch" src="images/rdd-tasks.png"/>
+
+
+						<aside class="notes">
+							<ul>
+								<li>One task per partition (on a per stage basis)</li> 
+		          				<li>task is smallest unit of computation</li>       
+		          				<li>partition is smallest unit of data</li>      
+		          			</ul>
+	          			</aside>
+					</section>
+
 
 					<section>
 						<h2>RDD Operations</h2>
@@ -1052,7 +1086,7 @@ println(counts.toDebugString)
 
 	          			<aside class="notes">
 	          				<ul>
-	          					<li>Data can be ingestedby RECEIVERS from many sources like Kafka, Flume, Twitter, ZeroMQ, Kinesis, or TCP sockets, and can be processed using complex algorithms expressed with high-level functions like map, reduce, join and window.</li>
+	          					<li>Data can be ingested by RECEIVERS from many sources like Kafka, Flume, Twitter, ZeroMQ, Kinesis, or TCP sockets, and can be processed using complex algorithms expressed with high-level functions like map, reduce, join and window.</li>
 	          					<li>Can have reliable and unreliable receivers</li>
 	          					<li>Can store raw data or aggregated (processed) data... or both!</li>
 	          				</ul>
@@ -1246,8 +1280,9 @@ val wordDStream =
 def stateMappingFunc(batchTime: Time, key: String,
     value: Option[Int], state: State[Long]
     ): Option[(String, Long)] = {
-  val sum = value.getOrElse(0).toLong 
-     + state.getOption.getOrElse(0L)
+  val currentVal = value.getOrElse(0).toLong
+  val aggVal = state.getOption.getOrElse(0L)
+  val sum = currentVal + aggVal
   val output = (key, sum)
   state.update(sum)
   Some(output)
@@ -1384,7 +1419,7 @@ val tagCountsOverWindow = hashtags
 
 val sortedTagCounts = tagCountsOverWindow
    //Swap the key and value to make sorting easier
-   .map { case (topic, count) => (count, topic) }
+   .map { case (hashtag, count) => (count, hashtag) }
    .transform(_.sortByKey(false))
 
 //Print the Top 10
@@ -1402,20 +1437,20 @@ sortedTagCounts.print()
 						<h2>Twitter Hashtag Counter Output</h2>
 						<pre><code data-trim class="scala">
 -------------------------------------------
-Time: 1452019703000 ms
+Time: 1452124409000 ms
 -------------------------------------------
-(18,(#videomtv2015,1))
-(6,(#artilleryrompecombate,1))
-(5,(#elcambiocomienzahoy,1))
-(4,(#gameinsight,1))
+(7,#eurekamag)
+(7,#wastehistime2016)
+(6,#aldub25thweeksary)
+(6,#videomtv2015)
 ...
 -------------------------------------------
-Time: 1452019704000 ms
+Time: 1452124411000 ms
 -------------------------------------------
-(18,(#videomtv2015,1))
-(6,(#artilleryrompecombate,1))
-(6,(#elcambiocomienzahoy,1))
-(5,(#np,1))
+(8,#wastehistime2016)
+(7,#eurekamag)
+(6,#aldub25thweeksary)
+(6,#videomtv2015)
 ...
 
 	          			</code></pre>
@@ -1481,7 +1516,7 @@ Time: 1452019704000 ms
 					</section>
 
 					<section>
-						<h2>Cassandra Connector Partitioning</h2>
+						<h2>Cassandra Aware Partitioning</h2>
 						<ul>
 			         		<li>Nodes in the Cassandra Cluster own part of the token range</li>
 			         		<li>Spark connector keeps track of where all these live</li>
@@ -1501,6 +1536,19 @@ Time: 1452019704000 ms
      							<li>Depends on the RDD being partition in a similar way to the Cassandra table</li>
      							<li>spark.locality.wait property defines how long to wait for the preferred partition/node</li>
      							<li>data is paged out according to the spark.cassandra.input.page.row.size property</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Cassandra Aware Partitioning (cont...)</h2>
+						<img class="stretch" src="images/spark-cassandra-partitioning.png"/>
+
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>We can repartition datasets to better suit our application and data</li>
+	          					<li>The rdd is on the same node as the node who hold that cassandra partition key</li>
+	          					
 	          				</ul>
 	          			</aside>
 					</section>
