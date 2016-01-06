@@ -1451,6 +1451,7 @@ Time: 1452019704000 ms
 	          			<aside class="notes">
 	          				<ul>
 	          					<li>Spark specific data center</li>
+	          					<li>Spark worker living on each Cassandra node</li>
 	          					<li>Prevents Spark interferring with norml queries</li>
 	          					<li>Data is replicated by Cassandra between the data centres, both read+write</li>
 	          					<li>Configured using the dse.yaml</li>
@@ -1471,6 +1472,10 @@ Time: 1452019704000 ms
 	          				<ul>
 	          					<li>Shuffling is expensive, so it's important to get partitioning correct</li>
 	          					<li>Some operations explicitly shuffle data</li>
+	          					<li>Allows complex queries within a partition, although Cassandra getting more and more built in functionality to do this</li>
+	          					<li>Can do table wide scans, thought slower than HDFS</li>
+	          					<li>Can use Spark to create agg tables, effectively materialised views</li>
+	          					<li>Cassandra 3 has materialised views</li>
 	          				</ul>
 	          			</aside>
 					</section>
@@ -1478,13 +1483,24 @@ Time: 1452019704000 ms
 					<section>
 						<h2>Cassandra Connector Partitioning</h2>
 						<ul>
-			         		<li></li>
+			         		<li>Nodes in the Cassandra Cluster own part of the token range</li>
+			         		<li>Spark connector keeps track of where all these live</li>
+			         		<li>These ranges are then mapped to Spark partitions</li>
+			         		<li>So each Spark partition knows which C* node it's data is on</li>
+			         		<li>The Spark driver &amp; executor can therefore assign the task to the appropriate node</li>
+			         		<li>Processing local data is faster!!</li>
 	          			</ul>
 
 	          			<aside class="notes">
 	          				<ul>
-	          					<li></li>
-	          					<li></li>
+	          					<li>Lets ignore vnodes for simplicity</li>
+	          					<li>So partition x is responsible for a piece of data in each range x</li>
+	          					<li>Uses spark.cassandra.split.size  to determine how to break up the ranges into these pieces</li>
+          						<li>This is an estimate as it doesn’t read all the data</li>
+     							<li>As in it knows which Cassandra node the data is on</li>
+     							<li>Depends on the RDD being partition in a similar way to the Cassandra table</li>
+     							<li>spark.locality.wait property defines how long to wait for the preferred partition/node</li>
+     							<li>data is paged out according to the spark.cassandra.input.page.row.size property</li>
 	          				</ul>
 	          			</aside>
 					</section>
