@@ -725,7 +725,7 @@
 	          				</li>
 	          				<li><code>spark-submit</code>
 	          					<ul>
-			         				<li>Extended Scala REPL with Spark imports already in scope</li>
+			         				<li>Used to submit jobs (JARs) to the cluster</li>
 		         				</ul>
 	          				</li>
 	          				<li><code>spark-sql</code>
@@ -747,40 +747,7 @@
 					</section>
 
 					<section>
-						Add Spark Shell image
-						<img class="stretch" src="images/..."/>
-					</section>
-
-					<section>
-						<h2>Monitoring</h2>
-						
-						<ul>
-							<li><code>http://localhost:4040</code>
-	          					<ul>
-			         				<li>Spark’s “stages” job console. Started by the SparkContext.</li>
-		         				</ul>
-	          				</li>
-	          				<li><code>http://master_host_name:4040</code>
-	          					<ul>
-			         				<li>For Spark Standalone clusters, the Spark Master.</li>
-		         				</ul>
-	          				</li>
-	          				<li><code>http://slave_host_name:7077</code>
-	          					<ul>
-			         				<li>For Spark slave nodes</li>
-		         				</ul>
-	          				</li>
-	          			</ul>
-	          			<aside class="notes">
-							<ul>
-		          				<li>Shells make programming so much easier</li>
-		          			</ul>
-	          			</aside>
-					</section>
-
-					<section>
-						Add monitoring console image
-						<img class="stretch" src="images/..."/>
+						<img class="stretch" src="images/spark-shell.png"/>
 					</section>
 
 					<section>
@@ -849,7 +816,7 @@
 								<li>An RDD is simply an immutable distributed collection of objects that can be operated on in paralell</li>
 								<li>RDDs are the workhorse of Spark, everything is done using RDDs.</li>
 								<li>Everything is expressed as either creating new RDDs, transforming existing RDDs, or calling operations on RDDs to compute a result</li>
-		          				<li>Each RDD is split into multiple partitions, which may be computed on different nodes of the cluster</li>
+		          				<li>Each RDD is split into stages of tasks, which are submitted to the cluster manager and may be computed on different nodes of the cluster</li>
 		          				<li>Users create RDDs in three ways: from an RDD, by loading an external dataset, or by distributing a collection of objects (e.g., a list or set) in their driver program, not done in production as the whole dataset must be in memory</li>	
 		          				<li>Persistent in memory between operations</li>	     
 		          			</ul>
@@ -934,10 +901,18 @@
 					<section>
 						<h2>Basic Word Count</h2>
 
-						<span>First we need the appropriate imports</span>
+						<span>First add the imports and create the <code>SparkContext</code></span>
 
 						<pre><code data-trim class="scala">
-TODO
+import org.apache.spark.{SparkConf, SparkContext}
+
+//Create a conf, running on two local cores
+val conf  = new SparkConf()
+   .setAppName("Simple Application")
+   //* will use all cores
+   .setMaster("local[2]")
+
+val sc = new SparkContext(conf)
 	          			</code></pre>
 	          			<aside class="notes">
 	          				<ul>
@@ -950,10 +925,21 @@ TODO
 					<section>
 						<h2>Basic Word Count (cont...)</h2>
 
-						<span>We can now create out <code>SparkContext</code> and from that an RDD</span>
+						<span>We can now create an RDD from our <code>SparkContext</code>, we can then transform the RDD and execute it</span>
 
 						<pre><code data-trim class="scala">
-TODO
+val input = sc.textFile("words.txt")
+// Split up into words.
+val words = input.flatMap(line => line.split(" "))
+
+val counts = words
+   //pair each word with 1
+   .map(word => (word, 1))
+   //combine all matching words
+   .reduceByKey{case (x, y) => x + y}
+
+// Save the word count back out to a text file.
+counts.saveAsTextFile("counts.txt")
 	          			</code></pre>
 	          			<aside class="notes">
 	          				<ul>
@@ -966,10 +952,18 @@ TODO
 					<section>
 						<h2>Basic Word Count (cont...)</h2>
 
-						<span>From there we can transform the RDD and execute it</span>
+						<span>The result is a file containing the following</span>
 
 						<pre><code data-trim class="scala">
-TODO
+...
+(daughter,1)
+(means,1)
+(this,2)
+(brother,1)
+(possession,1)
+(is,1)
+(term,1)
+...
 	          			</code></pre>
 	          			<aside class="notes">
 	          				<ul>
@@ -977,6 +971,70 @@ TODO
 	          					<li></li>
 	          				</ul>
 	          			</aside>
+					</section>
+
+					<section>
+						<h2>Debugging Word Count</h2>
+
+						<span><code>toDebugString</code> lets us print out the RDD lineage for debugging</span>
+
+						<pre><code data-trim class="scala">
+println(counts.toDebugString)
+
+(2) ShuffledRDD[4] at reduceByKey at BasicWordCount.scala:25 []
+ +-(2) MapPartitionsRDD[3] at map at BasicWordCount.scala:24 []
+    |  MapPartitionsRDD[2] at flatMap at BasicWordCount.scala:19 []
+    |  MapPartitionsRDD[1] at textFile at BasicWordCount.scala:14 []
+    |  words.txt HadoopRDD[0] at textFile at BasicWordCount.scala:14 []
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li></li>
+	          					<li></li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Monitoring</h2>
+						
+						<ul>
+							<li><code>http://localhost:4040</code>
+	          					<ul>
+			         				<li>Spark’s “stages” job console. Started by the SparkContext.</li>
+		         				</ul>
+	          				</li>
+	          				<li><code>http://master_host_name:4040</code>
+	          					<ul>
+			         				<li>For Spark Standalone clusters, the Spark Master.</li>
+		         				</ul>
+	          				</li>
+	          				<li><code>http://slave_host_name:7077</code>
+	          					<ul>
+			         				<li>For Spark slave nodes</li>
+		         				</ul>
+	          				</li>
+	          			</ul>
+	          			<aside class="notes">
+							<ul>
+		          				<li>Shells make programming so much easier</li>
+		          			</ul>
+	          			</aside>
+					</section>
+
+					<section>	
+						We can view all jobs since the <code>SparkContext</code> was started		
+						<img class="stretch" src="images/spark-console-jobs.png"/>
+					</section>
+
+					<section>	
+						Clicking on a job displays more fine grained details
+						<img class="stretch" src="images/spark-console-details.png"/>
+					</section>
+
+					<section>
+						The lineage graph is really useful for debugging						
+						<img class="stretch" src="images/spark-console-dag.png"/>
 					</section>
 
 				</section>
@@ -1050,6 +1108,220 @@ TODO
 					</section>
 
 					<section>
+						<h2>Basic Stream Printer</h2>
+
+						<span>First let add the imports and create a <code>StreamingContext</code></span>
+
+						<pre><code data-trim class="scala">
+import org.apache.spark._
+import org.apache.spark.rdd.RDD
+import org.apache.spark.streaming._
+
+val conf = new SparkConf()
+   .setAppName("Streaming Word Count")
+   .setMaster("local[2]")
+
+val ssc = new StreamingContext(conf, Seconds(1))
+val context = ssc.sparkContext
+	          			</code></pre>
+	          			<aside class="notes">
+	          				We must have more cores available than receivers.
+	          				<ol>
+	          					<li>Define the input sources by creating input DStreams.</li>
+								<li>Define operations to be applied to the batches</li>
+								<li>Start receiving data and processing it using streamingContext.start()</li>
+								<li>Wait for the processing to be stopped (manually or due to any error) using streamingContext.awaitTermination()</li>
+								<li>The processing can be manually stopped using streamingContext.stop()</li>
+	          				</ol>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Basic Stream Printer (cont...)</h2>
+
+						<span>Next we need to define the receiver, here we're using a queue</span>
+
+						<pre><code data-trim class="scala">
+//We're using a mutable queue with 3 items
+val rddQueue: Queue[RDD[String]] = Queue()
+rddQueue += context.textFile("words.txt")
+rddQueue += context.textFile("words2.txt")
+rddQueue += context.textFile("words3.txt")
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>The queue has just 3 items, we could replace this with a socketTextStream, kafka, twitter, etc. But this makes it easy to run the examples</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Basic Stream Printer (cont...)</h2>
+
+						<span>Finally we can read, parse and start the stream</span>
+
+						<pre><code data-trim class="scala">
+val streamBatches = 
+   ssc.queueStream(rddQueue, oneAtATime = true)
+
+val words = streamBatches.flatMap(_.split(" "))
+val pairs = words.map(word => (word, 1))
+val wordCounts = pairs.reduceByKey(_ + _)
+
+//print the first 10 elements of each batch
+wordCounts.print()
+
+//Start the stream and wait for it to terminate
+ssc.start()
+ssc.awaitTermination()
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>the queue acts as the source receiver, queueStream removes one item each time, so 3 batches in total</li>
+	          					<li>Once a context has been started, no new streaming computations can be set up or added to it.</li>
+								<li>Once a context has been stopped, it cannot be restarted.</li>
+								<li>Only one StreamingContext can be active in a JVM at the same time.</li>
+	          					<li>flatMap will split each line into multiple words and the stream of words is represented as the words DStream</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Basic Stream Printer output</h2>
+						<pre><code data-trim class="scala">
+-------------------------------------------
+Time: 1452006984000 ms
+-------------------------------------------
+(deserved,1)
+(Ambarri,,1)
+(this,1)
+(laid,1)
+(themselves,2)
+(same,1)
+(have,1)
+(carried,1)
+([pleading],1)
+(until,1)
+...
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>The output of the current batch is printed each time</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Stateful Stream Printer</h2>
+
+						<span>Lets extend this example by persisting the state between batches</span>
+
+						<pre><code data-trim class="scala">
+val ssc = new StreamingContext(conf, Seconds(1))
+// We need somewhere to store the state
+// So we create a checkout directory
+ssc.checkpoint("./checkpoint") 
+//Create a stream using a Dummy ReceiverInputDStream
+val stream = ssc.receiverStream(
+   new DummySource(ratePerSec = 1))
+
+// Parse the stream words and pair them up
+val wordDStream = 
+   stream.flatMap(_.split(" ")).map(x => (x, 1))
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>The DummySource is a custom receiver which returns the same set of words each time, in this case once per second</li>
+	          					<li>Notice we're not reducing them here</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Stateful Stream Printer (cont...)</h2>
+
+						<span>Lets extend this example by persisting the state between batches</span>
+
+						<pre><code data-trim class="scala">
+def stateMappingFunc(batchTime: Time, key: String,
+    value: Option[Int], state: State[Long]
+    ): Option[(String, Long)] = {
+  val sum = value.getOrElse(0).toLong 
+     + state.getOption.getOrElse(0L)
+  val output = (key, sum)
+  state.update(sum)
+  Some(output)
+}
+val stateSpec = StateSpec
+  .function(stateMappingFunc _)
+  .numPartitions(2)
+  .timeout(Seconds(60))
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
+      							<li>For mapWithState need to define a function which can combine the state of two DStreams</li>
+      							<li>This is used to update the state of the previous batch with that of the new one</li>
+      							<li> The function must accept the following params:</li>
+     						 	<li> The current Batch Time</li>
+      							<li> The key for which the state needs to be updated</li>
+      							<li> The value observed at the 'Batch Time' for the key.</li>
+      							<li> The current state for the key.</li>
+      							<li> Return: the new (key, value) pair where value has the updated state information
+	          					<li>The state Spec wraps the function and allows us to define properties such as initialState and partitions</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Stateful Stream Printer (cont...)</h2>
+
+						<span>Finally merge the states using the function and start the stream</span>
+
+						<pre><code data-trim class="scala">
+// apply the function returning a merged stream
+val wordCountStateStream = 
+   wordDStream.mapWithState(stateSpec)
+
+//Print the first 10 records of the stream
+wordCountStateStream.print()
+
+ssc.start()
+ssc.awaitTermination()
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
+      							<li>Since we merge the streams based on keys, this stream will contain the same # of records as the input dstream</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Stateful Stream Printer Output</h2>
+						<pre><code data-trim class="scala">
+Time: 1452011283000 ms
+-------------------------------------------
+(buy,2)
+(as,7)
+(as,8)
+(burden,2)
+....
+-------------------------------------------
+Time: 1452011284000 ms
+-------------------------------------------
+(buy,3)
+(as,12)
+(as,13)
+(burden,3)
+....
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
+      							<li>This time the output is cumulative, incrementing words between batches</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
 						<h2>Windowed DStreams</h2>
 
 						<img class="stretch" src="images/streaming-windowed.png"/>
@@ -1074,38 +1346,86 @@ TODO
 					</section>
 
 					<section>
-						<h2>Basic Stream Printer</h2>
+						<h2>Twitter Hashtag Counter</h2>
 
-						<span>First we need the appropriate imports</span>
+						<span>This time we're consuming from the live Twitter API</span>
 
 						<pre><code data-trim class="scala">
-TODO
+//Receive all tweets for the scala hashtag filters
+val stream = TwitterUtils.createStream(ssc, None)
+
+//Split tweets into words
+val words = stream.flatMap(tweet => 
+   tweet.getText.toLowerCase.split(" "))
+
+//Pull out the hashtags
+val hashtags = words
+   .filter(word => word.startsWith("#"))
 	          			</code></pre>
 	          			<aside class="notes">
 	          				<ul>
-	          					<li></li>
-	          					<li></li>
+	          					<li>Each item in the stream is an object, containing various Tweet properties, time, user, retweet, etc</li>
+	          					<li>You can pass filters to the createStream</li>
+	          					<li>We're not doing anything fancy with re-tweets etc</li>
 	          				</ul>
 	          			</aside>
 					</section>
 
 					<section>
-						<h2>Basic Stream Printer (cont...)</h2>
+						<h2>Twitter Hashtag Counter</h2>
 
-						<span>Now lets aggregate and print the batches</span>
+						<span>We want to count all tweets in the last 60 seconds</span>
 
 						<pre><code data-trim class="scala">
-TODO
+val tagCountsOverWindow = hashtags
+   .map((_, 1))
+   //60 second window
+   .reduceByKeyAndWindow(_ + _, Seconds(60))
+
+val sortedTagCounts = tagCountsOverWindow
+   //Swap the key and value to make sorting easier
+   .map { case (topic, count) => (count, topic) }
+   .transform(_.sortByKey(false))
+
+//Print the Top 10
+sortedTagCounts.print()
 	          			</code></pre>
 	          			<aside class="notes">
 	          				<ul>
-	          					<li>Once a context has been started, no new streaming computations can be set up or added to it.</li>
-								<li>Once a context has been stopped, it cannot be restarted.</li>
-								<li>Only one StreamingContext can be active in a JVM at the same time.</li>
+	          					<li>This requires shuffling data as we're swapping the keys around</li>
+	          					<li>transform lets us apply RDD specific functions that DStreams don't expose</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>
+						<h2>Twitter Hashtag Counter Output</h2>
+						<pre><code data-trim class="scala">
+-------------------------------------------
+Time: 1452019703000 ms
+-------------------------------------------
+(18,(#videomtv2015,1))
+(6,(#artilleryrompecombate,1))
+(5,(#elcambiocomienzahoy,1))
+(4,(#gameinsight,1))
+...
+-------------------------------------------
+Time: 1452019704000 ms
+-------------------------------------------
+(18,(#videomtv2015,1))
+(6,(#artilleryrompecombate,1))
+(6,(#elcambiocomienzahoy,1))
+(5,(#np,1))
+...
+
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
 	          					<li></li>
 	          				</ul>
 	          			</aside>
 					</section>
+
 
 				</section>
 
@@ -1132,7 +1452,7 @@ TODO
 	          				<ul>
 	          					<li>Spark specific data center</li>
 	          					<li>Prevents Spark interferring with norml queries</li>
-	          					<li>Data is replicated between the data centres, both read+write</li>
+	          					<li>Data is replicated by Cassandra between the data centres, both read+write</li>
 	          					<li>Configured using the dse.yaml</li>
 	          				</ul>
 	          			</aside>
@@ -1143,7 +1463,6 @@ TODO
 						<ul>
 							<li>Lets you expose Cassandra tables as Spark RDDs, write Spark RDDs to Cassandra tables, and execute CQL queries in your Spark applications</li>
 			         		<li>Open sourced by Datastax, not DSE specific</li>
-		         			<li>Takes into account data location</li>
 		         			<li>Spark partitions are constructed from data stored by C* on the same node</li>
 		         			<li>Partitions are not computed until an action is seen</li>
 	          			</ul>
@@ -1173,37 +1492,91 @@ TODO
 					<section>
 						<h2>Cassandra Stream Word Count</h2>
 
-						<span>First we need the appropriate imports</span>
+						<span>First we need the appropriate imports and create the context</span>
 
 						<pre><code data-trim class="scala">
-TODO
+import com.datastax.spark.connector.SomeColumns
+import com.datastax.spark.connector.cql.CassandraConnector
+import com.datastax.spark.connector.streaming._
+import com.datastax.spark.connector._
+
+val conf = new SparkConf()
+   .setAppName("Twitter HashTag Counter")
+   .setMaster("local[2]")
+   //We need to specify the Cassandra host
+   .set("spark.cassandra.connection.host", 
+           "127.0.0.1")
+
+val ssc = new StreamingContext(conf, Seconds(1))
 	          			</code></pre>
 	          			<aside class="notes">
 	          				<ul>
-	          					<li></li>
+	          					<li>Note the cassandra configuration</li>
 	          					<li></li>
 	          				</ul>
 	          			</aside>
 					</section>
 
 					<section>
-						<h2>How this fits into our architecture(s)</h2>
-						<ul>
-			         		<li></li>
-	          			</ul>
+						<h2>Cassandra Stream Word Count (cont...)</h2>
 
+						<span>Next we parse the and filter the tweets</span>
+
+						<pre><code data-trim class="scala">
+//Receive all tweets unfiltered
+val stream = TwitterUtils
+   .createStream(ssc, None)
+
+//Split tweets into words
+val words = stream.flatMap(tweet => 
+   tweet.getText.toLowerCase.split(" "))
+
+//Pull out the hashtags and map them to a count
+val hashtags = words.filter(word => 
+   word.startsWith("#"))
+	          			</code></pre>
 	          			<aside class="notes">
 	          				<ul>
-	          					<li></li>
+	          					<li>Not much new here</li>
 	          					<li></li>
 	          				</ul>
 	          			</aside>
 					</section>
 
+					<section>
+						<h2>Cassandra Stream Word Count (cont...)</h2>
+
+						<span>First we need the appropriate imports and create the context</span>
+
+						<pre><code data-trim class="scala">
+//We need to define a case class
+case class HashTagCount(
+   hashtag: String, count: Long)
+
+hashtags
+   //This is exactly the same as the map -> reduce
+   .countByValue()
+   //map to the case class
+   .map(rdd => HashTagCount(rdd._1, rdd._2))
+   //save the stream to Cassandra
+   .saveToCassandra("spark", "wordcount")
+	          			</code></pre>
+	          			<aside class="notes">
+	          				<ul>
+	          					<li>We're saving the case class to cassandra, incrementing the counter</li>
+	          					<li>Note that the data is not ordered here</li>
+	          				</ul>
+	          			</aside>
+					</section>
+
+					<section>	
+						<h2>Cassandra Stream Word Count output</h2>
+						<img class="stretch" src="images/spark-cassandra-wordcount.png"/>
+					</section>
 				</section>
 
 				<section>
-					<h2>It's been emotional...</h2>
+					<h2>That's all folks...</h2>
 			        <ul>
 			        	<li>Slides at <a href="http://markglh.github.io/AkkaStreams-Madlab-Slides">http://markglh.github.io/AkkaStreams-Madlab-Slides</a></li>
 			         	<li>Follow me <a href="https://twitter.com/markglh">@markglh</a></li>
