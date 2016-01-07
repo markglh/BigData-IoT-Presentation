@@ -79,8 +79,9 @@
 		          		<aside class="notes">
 		          			<ul>
 		          				<li>Everyone wants a piece of IoT</li>
-		          				<li>Even if they don't know what they're actually selling</li>
+		          				<li>Often when they don't have any real need</li>
 		          				<li>No one size fits all solution</li>
+		          				<li>There are platforms that attempt to cover a wide area but they're sitll fairly proprietary</li>
 		          				<li>No connectivity standards across devices</li>
 		          				<li>Bluetooth, zigbee, z-wave, 6LowPAN, Thread, WiFi, NFC, Sigfox, Neul, LoRaWAN</li>
 		          				<li>Because different devices have different use-cases!!</li>
@@ -147,6 +148,7 @@
 							<li>What to do with all this data?!?
 		         					<ul>
 										<li>Big data needs big processing!</li>
+										<li>Replaying it for reprocessing</li>
 									</ul>
 								</li>
 	          			</ul>
@@ -648,6 +650,7 @@
 		          				<li>The fundamental programming abstraction in Spark is the Resilient Distributed Dataset (RDD)</li>
 		          				<li>can be have crazy performance improvements over vanilla MapReduce</li>
 		          				<li>Spark runs on Hadoop, Mesos, standalone, or in the cloud. It can access diverse data sources including HDFS, Cassandra, HBase, and S3</li>
+		          				<li>It is NOT a database</li>
 		          			</ul>
 	          			</aside>
 					</section>
@@ -676,7 +679,7 @@
 					</section>
 
 					<section>
-						<h2>Why Spark cont...</h2>
+						<h2>Why Spark (cont...)</h2>
 						<ul>
 	          				<li>Easy to develop
 	          					<ul>
@@ -962,7 +965,7 @@ val sc = new SparkContext(conf)
 						<span>We can now create an RDD from our <code>SparkContext</code>, we can then transform the RDD and execute it</span>
 
 						<pre><code data-trim class="scala">
-val input = sc.textFile("words.txt")
+val input: RDD[String] = sc.textFile("words.txt")
 // Split up into words.
 val words = input.flatMap(line => line.split(" "))
 
@@ -1051,7 +1054,7 @@ println(counts.toDebugString)
 	          			</ul>
 	          			<aside class="notes">
 							<ul>
-		          				<li>Shells make programming so much easier</li>
+		          				<li></li>
 		          			</ul>
 	          			</aside>
 					</section>
@@ -1144,7 +1147,7 @@ println(counts.toDebugString)
 					<section>
 						<h2>Basic Stream Printer</h2>
 
-						<span>First let add the imports and create a <code>StreamingContext</code></span>
+						<span>First lets add the imports and create a <code>StreamingContext</code></span>
 
 						<pre><code data-trim class="scala">
 import org.apache.spark._
@@ -1195,7 +1198,7 @@ rddQueue += context.textFile("words3.txt")
 						<span>Finally we can read, parse and start the stream</span>
 
 						<pre><code data-trim class="scala">
-val streamBatches = 
+val streamBatches: InputDStream[String] = 
    ssc.queueStream(rddQueue, oneAtATime = true)
 
 val words = streamBatches.flatMap(_.split(" "))
@@ -1255,9 +1258,10 @@ val ssc = new StreamingContext(conf, Seconds(1))
 // We need somewhere to store the state
 // So we create a checkout directory
 ssc.checkpoint("./checkpoint") 
-//Create a stream using a Dummy ReceiverInputDStream
-val stream = ssc.receiverStream(
-   new DummySource(ratePerSec = 1))
+//Create a stream using a Dummy Receiver
+val stream: ReceiverInputDStream[String] = 
+   ssc.receiverStream(
+      new DummySource(ratePerSec = 1))
 
 // Parse the stream words and pair them up
 val wordDStream = 
@@ -1274,7 +1278,7 @@ val wordDStream =
 					<section>
 						<h2>Stateful Stream Printer (cont...)</h2>
 
-						<span>Lets extend this example by persisting the state between batches</span>
+						<span>We need to define a function to combine batches</span>
 
 						<pre><code data-trim class="scala">
 def stateMappingFunc(batchTime: Time, key: String,
@@ -1386,8 +1390,9 @@ Time: 1452011284000 ms
 						<span>This time we're consuming from the live Twitter API</span>
 
 						<pre><code data-trim class="scala">
-//Receive all tweets for the scala hashtag filters
-val stream = TwitterUtils.createStream(ssc, None)
+//Receive all tweets unfiltered
+val stream: ReceiverInputDStream[Status] = 
+   TwitterUtils.createStream(ssc, None)
 
 //Split tweets into words
 val words = stream.flatMap(tweet => 
@@ -1595,8 +1600,8 @@ val ssc = new StreamingContext(conf, Seconds(1))
 
 						<pre><code data-trim class="scala">
 //Receive all tweets unfiltered
-val stream = TwitterUtils
-   .createStream(ssc, None)
+val stream: ReceiverInputDStream[Status] = 
+   TwitterUtils.createStream(ssc, None)
 
 //Split tweets into words
 val words = stream.flatMap(tweet => 
