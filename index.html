@@ -1517,6 +1517,27 @@ Time: 1452124411000 ms
 
 					<section>
 						<h2>Cassandra Aware Partitioning</h2>
+						<img class="stretch" src="images/spark-cassandra-partitioning.png"/>
+
+	          			<aside class="notes">
+	          				The Cassandra connector uses Cassandra partition information to find and process data on local nodes
+	          				<ol>
+	          					<li>Nodes in the Cassandra Cluster own part of the token range</li>
+	          					<li>Spark connector keeps track of where all these live</li>
+	          					<li>These ranges are then mapped to Spark partitions</li>
+	          					<li>The connector uses this information to select Spark nodes local to the Cassandra data</li>
+	          				</ol>
+	          				<ul>
+	          					<li>We can repartition datasets to better suit our application and data</li>
+	          					<li>The rdd is on the same node as the node who hold that cassandra partition key</li>
+	          					
+	          				</ul>
+	          			</aside>
+					</section>
+
+
+					<section>
+						<h2>Cassandra Aware Partitioning (cont...)</h2>
 						<ul>
 			         		<li>Nodes in the Cassandra Cluster own part of the token range</li>
 			         		<li>Spark connector keeps track of where all these live</li>
@@ -1529,26 +1550,12 @@ Time: 1452124411000 ms
 	          			<aside class="notes">
 	          				<ul>
 	          					<li>Lets ignore vnodes for simplicity</li>
-	          					<li>So partition x is responsible for a piece of data in each range x</li>
 	          					<li>Uses spark.cassandra.split.size  to determine how to break up the ranges into these pieces</li>
           						<li>This is an estimate as it doesn’t read all the data</li>
      							<li>As in it knows which Cassandra node the data is on</li>
      							<li>Depends on the RDD being partition in a similar way to the Cassandra table</li>
      							<li>spark.locality.wait property defines how long to wait for the preferred partition/node</li>
      							<li>data is paged out according to the spark.cassandra.input.page.row.size property</li>
-	          				</ul>
-	          			</aside>
-					</section>
-
-					<section>
-						<h2>Cassandra Aware Partitioning (cont...)</h2>
-						<img class="stretch" src="images/spark-cassandra-partitioning.png"/>
-
-	          			<aside class="notes">
-	          				<ul>
-	          					<li>We can repartition datasets to better suit our application and data</li>
-	          					<li>The rdd is on the same node as the node who hold that cassandra partition key</li>
-	          					
 	          				</ul>
 	          			</aside>
 					</section>
